@@ -1,0 +1,12 @@
+.venv
+*.pyc
+*.log
+.DS_Store
+settings.py
+levsdelight_app/static/src/vendor/
+levsdelight_app/static/build/
+node_modules/
+
+# Database Backup Files
+monthmap.pg
+slideshow.pg

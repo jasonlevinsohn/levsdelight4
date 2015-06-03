@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lev's Delight</title>
+
+    {% block css_includes %}{% endblock %}
+    {% block meta_data %} {% endblock %}
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'build/css/all.css' %}">
+    <script src="{% static 'src/vendor/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'src/vendor/angularjs/angular.min.js' %}"></script>
+    <script src="{% static 'src/vendor/angular-ui-router/release/angular-ui-router.min.js' %}"></script>
+    <script src="{% static 'src/js/ng-slideshow-app.js' %}"></script>
+</head>
+<body ng-app="slideshow">
+    <header>
+        <div id="logo">
+            <h2>Lev's Delight</h2>
+            <h3>by Jason and Natty</h3>
+        </div>
+        <div id="login">
+            Login section
+        </div>
+    </header>
+    <section class="django-template">
+        <ng-include src="'{% static 'src/views/main.html' %}'"></ng-include>
+    </section>
+
+</body>
+</html>
