@@ -44,17 +44,17 @@ def slideshow(request, year=None, month=None):
     if objects_returned > 1:
         print "ERROR: MonthMap returned more than one result"
 
-    month_slides_query_set = Slideshow.objects.filter(slideshow_id=map_id)
-    serialized_data = serializers.serialize('json', month_slides_query_set)
+        return HttpResponse("ERROR: MonthMap returned more than one result")
+    else:
+        month_slides_query_set = Slideshow.objects.filter(slideshow_id=map_id)
+        serialized_data = serializers.serialize('json', month_slides_query_set)
 
-    # This allows us to bypass the cross-origin response problem when dealing with
-    # not the quite same domain.  http://localhost:8000.
-    response =  HttpResponse(json.dumps(serialized_data))
-    response['Access-Control-Allow-Origin'] = '*'
+        # This allows us to bypass the cross-origin response problem when dealing with
+        # not the quite same domain.  http://localhost:8000.
+        response =  HttpResponse(serialized_data)
+        response['Access-Control-Allow-Origin'] = '*'
 
-
-    # return HttpResponse(json.dumps(serialized_data))
-    return response
+        return response
 
 def monthlist(request):
 
