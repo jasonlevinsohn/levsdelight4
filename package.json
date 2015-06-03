@@ -1,0 +1,20 @@
+{
+  "name": "levsdelight4",
+  "version": "0.1.0",
+  "description": "Levs delight farm website and app",
+  "main": "app.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.levsdelight.com:jlev/levsdelight4.git"
+  },
+  "author": "Jason Levinsohn",
+  "license": "MIT",
+  "devDependencies": {
+    "gulp": "^3.8.11",
+    "gulp-concat": "^2.5.2",
+    "gulp-less": "^3.0.3"
+  }
+}
