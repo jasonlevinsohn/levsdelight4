@@ -1,11 +1,57 @@
 from django.shortcuts import render
 from django.core import serializers
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.template import RequestContext, loader
 from levsdelight_app.models import Slideshow, MonthMap
-import re, datetime, json
+import re, datetime, json, pprint, os
+from django.views.decorators.csrf import csrf_exempt
 
 from levsdelight_app.models import Slideshow
+
+
+# After receiving the images, process them by reducing
+# the image quality and upload them to S3.
+@csrf_exempt
+def uploadimage(request):
+
+    try:
+
+        # print "The request"
+        # print json.dumps(request)
+        # pprint.pprint(request.__dict__)
+        # print request.__dict__
+
+        print "the request:"
+        print request.REQUEST
+
+        file = request.FILES['farmFile']
+
+        # Save the uploaded file to a temporary place on disk.
+        this_path = os.path.dirname(os.path.abspath(__file__))
+        # This can also be used `this_path = os.getcwd()`
+        # for getting current working directory
+        full_path_file = this_path + '/tmp_image.jpg'
+
+        with open(full_file_path, 'wb+') as saved_tmp_file:
+        for chunk in f.chunks():
+            saved_tmp_file.write(chunk)
+        # End saving temp file to disk 06.13.2015
+
+        
+        # desc = request.REQUEST['description']
+        # title = request.REQUEST['title']
+        # month = request.REQUEST['month']
+        # report = "Desc: %s\n Title: %s\n Month: %s" % (desc, title, month)
+        print file
+    except Exception as e:
+        print 'Error with uploadimage request'
+        print e
+        return JsonResponse({'message': e.message})
+
+
+    # return HttpResponse("Hey, I appreciate the filez. \n\n %s" % (report))
+    return HttpResponse('Thanks we got it')
+
 
 def home(request):
 
