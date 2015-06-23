@@ -9,9 +9,9 @@ class ImageUploader:
     def __init__(self, file_name='test-image.jpg', month_to_save_to='june2015', scale_img=30, img_quality=80, temp_dir='tmp'):
 
         self.file_name = file_name
-        self.this_path = os.path.dirname(os.path.abspath(__file__))
+        self.this_path = os.path.dirname(os.path.abspath(__file__)) + '/' + temp_dir
         self.full_file_path = self.this_path + '/' + self.file_name
-        self.temp_dir = 'tmp'
+        self.temp_dir = temp_dir
 
         self.month_to_save_to = month_to_save_to
         self.scale = scale_img
