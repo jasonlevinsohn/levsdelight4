@@ -3,6 +3,7 @@
 *.log
 .DS_Store
 settings.py
+prod_settings.py
 levsdelight_app/static/src/vendor/
 levsdelight_app/static/build/
 node_modules/

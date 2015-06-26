@@ -9,6 +9,9 @@ from ImageUploader import ImageUploader
 
 from levsdelight_app.models import Slideshow
 
+def deploytest(request):
+
+    return HttpResponse('This is a test of deploying')
 
 # After receiving the images, process them by reducing
 # the image quality and upload them to S3.
