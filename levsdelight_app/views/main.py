@@ -3,11 +3,15 @@ from django.core import serializers
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.template import RequestContext, loader
 from levsdelight_app.models import Slideshow, MonthMap
-import re, datetime, json, pprint, os, shutil
+import re, datetime, json, pprint, os, shutil, logging
 from django.views.decorators.csrf import csrf_exempt
 from ImageUploader import ImageUploader
 
+
 from levsdelight_app.models import Slideshow
+
+print "View Name: %s" % __name__
+logger = logging.getLogger(__name__)
 
 def deploytest(request):
 
@@ -130,10 +134,14 @@ def monthlist(request):
 
     month_maps = MonthMap.objects.all()
 
+    logger.debug('Month List Function called')
+
     serialized_map = serializers.serialize('json', month_maps)
     response = HttpResponse(json.dumps(serialized_map))
     response = HttpResponse(serialized_map)
     response['Access-Control-Allow-Origin'] = '*'
+
+    logger.debug(response)
 
     return response
 

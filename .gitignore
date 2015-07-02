@@ -6,6 +6,9 @@ settings.py
 prod_settings.py
 levsdelight_app/static/src/vendor/
 levsdelight_app/static/build/
+levsdelight_app/static/admin/
+levsdelight_app/static/debug_toolbar/
+
 node_modules/
 
 # Database Backup Files
