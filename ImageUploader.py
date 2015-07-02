@@ -2,6 +2,7 @@ import os
 from PIL import Image, ImageFile
 from boto.s3.connection import S3Connection
 from boto.s3.key import Key
+from boto.s3.acl import CannedACLStrings
 
 class ImageUploader:
 
@@ -100,7 +101,16 @@ class ImageUploader:
 
             full_file_path = self.this_path + '/' + file_name
             number_of_times_to_call_callback = 5
-            bytes_uploaded = s3_image_key.set_contents_from_filename(full_file_path, None, True, self.upload_callback, number_of_times_to_call_callback, None, None, True)
+            bytes_uploaded = s3_image_key.set_contents_from_filename(
+                    full_file_path,
+                    None,
+                    True,
+                    self.upload_callback,
+                    number_of_times_to_call_callback,
+                    CannedACLStrings[1],
+                    None,
+                    True)
+
             print 'File %s has been uploaded to key %s' % (file_name, s3_image_key_name)
 
             return bytes_uploaded

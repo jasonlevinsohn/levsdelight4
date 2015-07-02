@@ -15,12 +15,15 @@ logger = logging.getLogger(__name__)
 
 def deploytest(request):
 
+    logger.info('Deploy Test has been called - from git foo')
+
     return HttpResponse('This is a test of deploying')
 
 # After receiving the images, process them by reducing
 # the image quality and upload them to S3.
 @csrf_exempt
 def uploadimage(request):
+    file_type_to_save = '-web'
 
     try:
 
@@ -49,11 +52,14 @@ def uploadimage(request):
                 saved_tmp_file.write(chunk)
         
         # Upload the file to S3
-        ic = ImageUploader(str(theFile))
+        month_to_save_to = request.POST.get('folder_name', 'june2015')
+
+        ic = ImageUploader(str(theFile), month_to_save_to)
         ic.connectToS3()
         ic.upload_original()
         ic.create_upload_web_image()
         ic.create_upload_thumbnail()
+
 
         # Remove the tmp directory and all the temp files
         try:
@@ -76,6 +82,43 @@ def uploadimage(request):
 
         return JsonResponse({'message': e.message})
 
+    try:
+        print 'File Uploaded, saving to database'
+
+        # Create the 
+        s_id = request.POST['slideshow_id']
+        slideshow_folder = request.POST['picture_location']
+        title = request.POST.get('title', '')
+        desc = request.POST.get('desc', '')
+
+        create_date = request.POST['modified_date']
+
+        # Create file type string
+        split_file_string = slideshow_folder.split('.')
+        concat_file_string = '%s%s.%s' % (
+                split_file_string[0],
+                file_type_to_save,
+                split_file_string[1])
+
+        picture_obj = Slideshow(
+                title=title,
+                desc=desc,
+                pictureLocation=concat_file_string,
+                isActive=True,
+                slideshow_id=s_id,
+                order_id=0,
+                pub_date=create_date
+                )
+
+        picture_obj.save()
+
+        
+        print slideshow_folder
+    except Exception as e:
+        print 'Error Saving Image to Database'
+        print e
+
+        return JsonResponse({'message': e.message})
 
     # return HttpResponse("Hey, I appreciate the filez. \n\n %s" % (report))
     return HttpResponse('Thanks we got it')
@@ -133,14 +176,13 @@ def monthlist(request):
 
     month_maps = MonthMap.objects.all()
 
-    logger.debug('Month List Function called')
+    logger.info('Month List Function called')
 
     serialized_map = serializers.serialize('json', month_maps)
     response = HttpResponse(json.dumps(serialized_map))
     response = HttpResponse(serialized_map)
     response['Access-Control-Allow-Origin'] = '*'
-
-    logger.debug(response)
+    response['My-Fancy-Header'] = 'Fine header you got there'
 
     return response
 
