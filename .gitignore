@@ -8,6 +8,7 @@ levsdelight_app/static/src/vendor/
 levsdelight_app/static/build/
 levsdelight_app/static/admin/
 levsdelight_app/static/debug_toolbar/
+logs/
 
 node_modules/
 
