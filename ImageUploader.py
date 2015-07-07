@@ -1,8 +1,15 @@
-import os
+import os, logging
 from PIL import Image, ImageFile
 from boto.s3.connection import S3Connection
 from boto.s3.key import Key
 from boto.s3.acl import CannedACLStrings
+
+# logging_file = os.getcwd() + '/logs/uploader.log'
+# print 'Logging File: ', logging_file
+# logging.basicConfig(filename=logging_file, level=logging.INFO)
+
+logger = logging.getLogger(__name__)
+print 'ImageLoader: ', __name__
 
 class ImageUploader:
 
@@ -18,10 +25,16 @@ class ImageUploader:
         self.scale = scale_img
         self.quality = img_quality
 
+        logger.info('Image Uploader Initialized')
+
 
     def upload_original(self):
         bytes_uploaded = self.uploadImage(self.file_name)
         print str(bytes_uploaded) + ' bytes uploaded for original file'
+
+        logger.info('Original File Uploaded')
+
+        return 'Original file uploaded'
 
         
     def create_upload_thumbnail(self):
@@ -38,8 +51,10 @@ class ImageUploader:
                 thumb.thumbnail(thumbnail_size)
                 thumb.save(self.this_path + '/' + thumbnail_file_name, 'JPEG')
                 print 'Thumbnail created.  File saved as', thumbnail_file_name
+                logger.info('Thumbnail created.  File saved as', thumbnail_file_name)
             except IOError:
                 print 'could not create thumbnail for', self.file_name
+                logger.error('could not create thumbnail for', self.file_name)
 
         # Upload the thumbnail to S3
         bytes_uploaded = self.uploadImage(thumbnail_file_name)
@@ -68,6 +83,7 @@ class ImageUploader:
                         progressive=True)
 
                 print 'Web File Created. File saved as ', web_file_name
+                logger.info('Web File Created. File saved as ', web_file_name)
                 print 'Quality Level: ', self.quality
 
                 print 'Scaled to %s percent' % self.scale
@@ -76,9 +92,14 @@ class ImageUploader:
                 bytes_uploaded = self.uploadImage(web_file_name)
                 print str(bytes_uploaded) + ' saved to S3 for web file.'
 
+                return 'Web File Created Successfully'
+
             except IOError as e:
                 print 'File could not be saved for', self.file_name
+                logger.error('File could not be saved for', self.file_name)
                 print e.strerror
+
+                return 'Web File Error: %s' % e.strerror
 
     def connectToS3(self):
         # Create a connection
@@ -88,6 +109,9 @@ class ImageUploader:
 
         # Get the bucket
         self.levsbucket = s3.get_bucket('levsdelight')
+        logger.info('Connected to S3')
+
+        return 'Connected to S3'
 
     def uploadImage(self, file_name):
 
@@ -112,20 +136,24 @@ class ImageUploader:
                     True)
 
             print 'File %s has been uploaded to key %s' % (file_name, s3_image_key_name)
+            logger.info('File %s has been uploaded to key %s' % (file_name, s3_image_key_name))
 
             return bytes_uploaded
         
         except IOError:
             print 'There was an error finding the file'
+            logger.error('There was an error finding the file')
             return 0
 
         except Exception as e:
             print 'Error uploading file: %s' % e.message
+            logger.error('Error uploading file: %s' % e.message)
 
             return 0
 
     def upload_callback(self, amt_uploaded, full_size):
         print 'Uploading: %d/%d' % (amt_uploaded, full_size)
+        logger.info('Uploading: %d/%d' % (amt_uploaded, full_size))
 
 
         
