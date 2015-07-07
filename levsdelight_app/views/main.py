@@ -68,10 +68,14 @@ def uploadimage(request):
         except OSError as e:
             print 'Unable to remove temp direcotory'
             print e
+            logger.error('Unable to remove temp directory')
+            logger.error(e)
 
     except Exception as e:
         print 'Error with uploadimage request'
         print e
+        logger.error('Error with upload request')
+        logger.error(e)
 
         # Remove the tmp directory and all the temp files
         try:
@@ -79,6 +83,7 @@ def uploadimage(request):
         except OSError as e:
             print 'Unable to remove temp direcotory'
             print e
+            logger.error('Unable to remove temp direcotory')
 
         return JsonResponse({'message': e.message})
 

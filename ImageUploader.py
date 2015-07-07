@@ -55,6 +55,10 @@ class ImageUploader:
             except IOError:
                 print 'could not create thumbnail for', self.file_name
                 logger.error('could not create thumbnail for', self.file_name)
+            except Exception as e:
+                logger.error('Error creating thumbnail file: ', e.message)
+        else:
+            logger.error('The file name is the same as thumbnail file, who knew')
 
         # Upload the thumbnail to S3
         bytes_uploaded = self.uploadImage(thumbnail_file_name)
@@ -125,6 +129,7 @@ class ImageUploader:
 
             full_file_path = self.this_path + '/' + file_name
             number_of_times_to_call_callback = 5
+            logger.info('The file path being uploaded is: %s' % full_file_path)
             bytes_uploaded = s3_image_key.set_contents_from_filename(
                     full_file_path,
                     None,
@@ -140,9 +145,10 @@ class ImageUploader:
 
             return bytes_uploaded
         
-        except IOError:
+        except IOError as i:
             print 'There was an error finding the file'
             logger.error('There was an error finding the file')
+            logger.error(i)
             return 0
 
         except Exception as e:
