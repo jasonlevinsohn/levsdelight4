@@ -6,6 +6,7 @@ from levsdelight_app.models import Slideshow, MonthMap
 import re, datetime, json, pprint, os, shutil, logging
 from django.views.decorators.csrf import csrf_exempt
 from ImageUploader import ImageUploader
+from django.core.mail import EmailMultiAlternatives
 
 
 from levsdelight_app.models import Slideshow
@@ -126,6 +127,24 @@ def uploadimage(request):
         return JsonResponse({'message': e.message})
 
     # return HttpResponse("Hey, I appreciate the filez. \n\n %s" % (report))
+    try:
+
+        subject = 'L2 Pictures added to %s' % (month_to_save_to)
+        from_email = 'jason@llamasontheloosefarm.com'
+        to = 'jason.levinsohn@gmail.com'
+        text_content = 'L3 Pictures Updated'
+        formatted_message = """
+            <b>Picture saved to %s</b>
+        """ % (month_to_save_to)
+
+        msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+        msg.attach_alternative(formatted_message, "text/html")
+        msg.send()
+    except Exception as e:
+        print 'Error returning Month Map'
+        print e
+        return JsonResponse({'message': e.message})
+
     return HttpResponse('Thanks we got it')
 
 
@@ -188,7 +207,7 @@ def monthlist(request):
     response = HttpResponse(json.dumps(serialized_map))
     response = HttpResponse(serialized_map)
     response['Access-Control-Allow-Origin'] = '*'
-    response['My-Fancy-Header'] = 'Fine header you got there'
+
 
     return response
 

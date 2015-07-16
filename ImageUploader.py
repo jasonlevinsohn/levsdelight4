@@ -14,7 +14,7 @@ print 'ImageLoader: ', __name__
 class ImageUploader:
 
     
-    def __init__(self, file_name='test-image.jpg', month_to_save_to='june2015', scale_img=30, img_quality=80, temp_dir='tmp'):
+    def __init__(self, file_name='test-image.jpg', month_to_save_to='june2015', scale_img=40, img_quality=80, temp_dir='tmp'):
 
         self.file_name = file_name
         self.this_path = os.path.dirname(os.path.abspath(__file__)) + '/' + temp_dir
@@ -51,12 +51,12 @@ class ImageUploader:
                 thumb.thumbnail(thumbnail_size)
                 thumb.save(self.this_path + '/' + thumbnail_file_name, 'JPEG')
                 print 'Thumbnail created.  File saved as', thumbnail_file_name
-                logger.info('Thumbnail created.  File saved as', thumbnail_file_name)
+                logger.info('Thumbnail created.  File saved as %s' % thumbnail_file_name)
             except IOError:
                 print 'could not create thumbnail for', self.file_name
-                logger.error('could not create thumbnail for', self.file_name)
+                logger.error('could not create thumbnail for %s' % self.file_name)
             except Exception as e:
-                logger.error('Error creating thumbnail file: ', e.message)
+                logger.error('Error creating thumbnail file: %s' % e.message)
         else:
             logger.error('The file name is the same as thumbnail file, who knew')
 
@@ -73,6 +73,19 @@ class ImageUploader:
         if self.file_name != web_file_name:
             try:
                 image_file = Image.open(self.full_file_path)
+                original_image_size = os.stat(self.full_file_path).st_size
+                print 'Image Size: '
+                print original_image_size
+
+                if original_image_size < 100000:
+                    self.scale = 100
+                elif original_image_size < 300000:
+                    self.scale = 70
+                elif original_image_size < 500000:
+                    self.scale = 50
+
+                logger.info('Original Image Size is %d. Scaling down to %d' % (original_image_size, self.scale))
+
                 if self.scale == 100:
                     width, height = image_file.size
                 else:
@@ -87,7 +100,7 @@ class ImageUploader:
                         progressive=True)
 
                 print 'Web File Created. File saved as ', web_file_name
-                logger.info('Web File Created. File saved as ', web_file_name)
+                logger.info('Web File Created. File saved as %s' % web_file_name)
                 print 'Quality Level: ', self.quality
 
                 print 'Scaled to %s percent' % self.scale
@@ -100,7 +113,7 @@ class ImageUploader:
 
             except IOError as e:
                 print 'File could not be saved for', self.file_name
-                logger.error('File could not be saved for', self.file_name)
+                logger.error('File could not be saved for %s' % self.file_name)
                 print e.strerror
 
                 return 'Web File Error: %s' % e.strerror
