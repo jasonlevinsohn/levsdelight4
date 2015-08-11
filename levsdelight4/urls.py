@@ -16,6 +16,6 @@ urlpatterns = [
     url(r'^api/allslides/$', 'levsdelight_app.views.main.allslides', name='allslides'),
     url(r'^api/uploadimage/$', 'levsdelight_app.views.main.uploadimage', name='uploadimage'),
     url(r'^api/deploytest/$', 'levsdelight_app.views.main.deploytest', name='deploytest'),
-
+    url(r'^api/auth/$', 'levsdelight_app.views.main.auth', name='auth'),
 
 ]

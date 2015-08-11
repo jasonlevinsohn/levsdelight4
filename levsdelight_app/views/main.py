@@ -3,16 +3,51 @@ from django.core import serializers
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.template import RequestContext, loader
 from levsdelight_app.models import Slideshow, MonthMap
-import re, datetime, json, pprint, os, shutil, logging
+import re, datetime, json, pprint, os, shutil, logging, base64
 from django.views.decorators.csrf import csrf_exempt
 from ImageUploader import ImageUploader
 from django.core.mail import EmailMultiAlternatives
+from django.contrib.auth import authenticate, login
 
 
 from levsdelight_app.models import Slideshow
 
 print "View Name: %s" % __name__
 logger = logging.getLogger(__name__)
+
+@csrf_exempt
+def auth(request):
+    if request.method == 'POST':
+
+        auth_header = request.META['HTTP_AUTHORIZATION']
+        base64_pass = auth_header.split(' ')[1] 
+        user_pass = base64.b64decode(base64_pass).split(':')
+        print user_pass
+        username = user_pass[0]
+        password = user_pass[1]
+
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                return JsonResponse({'code': 0, 'status': 'active', 'user': user.username})
+            else:
+                return JsonResponse({'code': 0, 'status': 'inactive', 'user': user.username})
+        else:
+            return JsonResponse({'code': 2, 'status': 'incorrect_password', 'user': username})
+
+    elif request.method == 'DELETE':
+        return HttpResponse('you Deleted')
+
+    elif request.method == 'GET':
+
+        if request.user.is_authenticated():
+            return JsonResponse({'user': request.META['USER']})
+        else:
+            return JsonResponse({'user': 'anonymous'})
+
+    else:
+        return HttpResponse('What is your method')
 
 def deploytest(request):
 
