@@ -12,7 +12,7 @@ from django.contrib.auth import authenticate, login, logout
 
 from levsdelight_app.models import Slideshow
 
-print "View Name: %s" % __name__
+# print "View Name: %s" % __name__
 logger = logging.getLogger(__name__)
 
 # Update the slides with ids in the list to the new order
@@ -24,7 +24,6 @@ def reorder(request):
             parsedList = json.loads(request.body)
 
             for s in parsedList:
-                print 'Id: %s NewOrder: %s' % (s['id'], s['newOrder'])
                 slideshow_obj = Slideshow.objects.get(pk=s['id'])
                 slideshow_obj.order_id = s['newOrder']
                 slideshow_obj.save()
@@ -37,7 +36,7 @@ def reorder(request):
 
         return HttpResponse('Disco Party')
     else:
-        return HttpResponse('Something went wrong')
+        return HttpResponse('Error Reordering Slides: unkonwn')
 
 @csrf_exempt
 def auth(request):
