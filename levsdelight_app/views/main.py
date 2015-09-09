@@ -7,13 +7,36 @@ import re, datetime, json, pprint, os, shutil, logging, base64
 from django.views.decorators.csrf import csrf_exempt
 from ImageUploader import ImageUploader
 from django.core.mail import EmailMultiAlternatives
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 
 
 from levsdelight_app.models import Slideshow
 
-print "View Name: %s" % __name__
+# print "View Name: %s" % __name__
 logger = logging.getLogger(__name__)
+
+# Update the slides with ids in the list to the new order
+# associated with that list.
+def reorder(request):
+    if request.method == 'POST':
+        try:
+
+            parsedList = json.loads(request.body)
+
+            for s in parsedList:
+                slideshow_obj = Slideshow.objects.get(pk=s['id'])
+                slideshow_obj.order_id = s['newOrder']
+                slideshow_obj.save()
+
+        except Exception as e:
+            print 'Reorder Error: '
+            print e
+            return HttpResponse('Error Reordering Slides: %s' % e)
+
+
+        return HttpResponse('Disco Party')
+    else:
+        return HttpResponse('Error Reordering Slides: unkonwn')
 
 @csrf_exempt
 def auth(request):
@@ -37,7 +60,8 @@ def auth(request):
             return JsonResponse({'code': 2, 'status': 'incorrect_password', 'user': username})
 
     elif request.method == 'DELETE':
-        return HttpResponse('you Deleted')
+        logout(request)
+        return HttpResponse('You have been logged out')
 
     elif request.method == 'GET':
 
