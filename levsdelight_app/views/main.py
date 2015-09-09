@@ -66,7 +66,7 @@ def auth(request):
     elif request.method == 'GET':
 
         if request.user.is_authenticated():
-            return JsonResponse({'user': request.META['USER']})
+            return JsonResponse({'user': request.user.get_username()})
         else:
             return JsonResponse({'user': 'anonymous'})
 
