@@ -15,6 +15,26 @@ from levsdelight_app.models import Slideshow
 # print "View Name: %s" % __name__
 logger = logging.getLogger(__name__)
 
+# Update the titles and descriptions of the slide objects.
+def update(request):
+    if request.method == 'POST':
+        try:
+            slide_list = json.loads(request.body)
+
+            for s in slide_list:
+                slideshow_obj = Slideshow.objects.get(pk=s['id'])
+                slideshow_obj.title = s['title']
+                slideshow_obj.desc = s['desc']
+                slideshow_obj.save()
+
+        except Exception as e:
+            return HttpResponse('Error updating Slides: %s' % e)
+
+        return HttpResponse('Slide Updated. Disco Party')
+
+    else:
+        return HttpResponse('Error Reordering Slides: unknown')
+
 # Update the slides with ids in the list to the new order
 # associated with that list.
 def reorder(request):
@@ -29,14 +49,11 @@ def reorder(request):
                 slideshow_obj.save()
 
         except Exception as e:
-            print 'Reorder Error: '
-            print e
             return HttpResponse('Error Reordering Slides: %s' % e)
-
 
         return HttpResponse('Disco Party')
     else:
-        return HttpResponse('Error Reordering Slides: unkonwn')
+        return HttpResponse('Error Reordering Slides: unknown')
 
 @csrf_exempt
 def auth(request):
@@ -45,7 +62,6 @@ def auth(request):
         auth_header = request.META['HTTP_AUTHORIZATION']
         base64_pass = auth_header.split(' ')[1] 
         user_pass = base64.b64decode(base64_pass).split(':')
-        print user_pass
         username = user_pass[0]
         password = user_pass[1]
 
@@ -92,8 +108,8 @@ def uploadimage(request):
         # pprint.pprint(request.__dict__)
         # print request.__dict__
 
-        print "the request:"
-        print request.POST
+        # print "the request:"
+        # print request.POST
 
         theFile = request.FILES['farmFile']
 
@@ -124,16 +140,11 @@ def uploadimage(request):
         # Remove the tmp directory and all the temp files
         try:
             shutil.rmtree(this_path + '/tmp')
-            print 'Temp Directory removed'
         except OSError as e:
-            print 'Unable to remove temp direcotory'
-            print e
             logger.error('Unable to remove temp directory')
             logger.error(e)
 
     except Exception as e:
-        print 'Error with uploadimage request'
-        print e
         logger.error('Error with upload request')
         logger.error(e)
 
@@ -141,14 +152,11 @@ def uploadimage(request):
         try:
             shutil.rmtree(this_path + '/tmp')
         except OSError as e:
-            print 'Unable to remove temp direcotory'
-            print e
             logger.error('Unable to remove temp direcotory')
 
         return JsonResponse({'message': e.message})
 
     try:
-        print 'File Uploaded, saving to database'
 
         # Create the 
         s_id = request.POST['slideshow_id']
@@ -178,10 +186,7 @@ def uploadimage(request):
         picture_obj.save()
 
         
-        print slideshow_folder
     except Exception as e:
-        print 'Error Saving Image to Database'
-        print e
 
         return JsonResponse({'message': e.message})
 
@@ -200,8 +205,6 @@ def uploadimage(request):
         msg.attach_alternative(formatted_message, "text/html")
         msg.send()
     except Exception as e:
-        print 'Error returning Month Map'
-        print e
         return JsonResponse({'message': e.message})
 
     return HttpResponse('Thanks we got it')
@@ -230,7 +233,6 @@ def slideshow(request, year=None, month=None):
     #         'year': year
     #     })
     # return HttpResponse(template.render(context))
-    print "Slideshow Request Received for %s %s " % (month, year)
 
     result = {
             'month': month,
@@ -242,7 +244,6 @@ def slideshow(request, year=None, month=None):
     objects_returned = mapObject.count()
     print objects_returned
     if objects_returned > 1:
-        print "ERROR: MonthMap returned more than one result"
 
         return HttpResponse("ERROR: MonthMap returned more than one result")
     else:
