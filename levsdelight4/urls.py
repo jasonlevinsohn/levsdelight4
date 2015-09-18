@@ -18,5 +18,6 @@ urlpatterns = [
     url(r'^api/deploytest/$', 'levsdelight_app.views.main.deploytest', name='deploytest'),
     url(r'^api/auth/$', 'levsdelight_app.views.main.auth', name='auth'),
     url(r'^api/reorder/$', 'levsdelight_app.views.main.reorder', name='reorder'),
+    url(r'^api/update/$', 'levsdelight_app.views.main.update', name='update'),
 
 ]
