@@ -12,7 +12,7 @@ from django.contrib.auth import authenticate, login, logout
 
 from levsdelight_app.models import Slideshow
 
-email_addresses_to_send = 'jason.levinsohn@gmail.com'
+email_addresses_to_send = 'jason.levinsohn@gmail.com', 'nparks55@gmail.com', 'bparks12@gmail.com'
 
 # print "View Name: %s" % __name__
 logger = logging.getLogger(__name__)
@@ -198,17 +198,15 @@ def uploadimage(request):
         # Get the Month Map
         mmo = MonthMap.objects.get(slideshow_id=s_id)
 
-        logger.log('Sending email about %s %d', mmo.month, mmo.year)
-
-        subject = 'L2 Pictures added to %s' % (month_to_save_to)
+        subject = 'L3 Pictures added to %s %d' % (mmo.month, mmo.year)
         from_email = 'L3 <jason@llamasontheloosefarm.com>'
         to = email_addresses_to_send
-        text_content = 'L3 Pictures Updated'
+        text_content = 'L3 Slideshow Updated'
         formatted_message = """
             <b>Picture saved to %s %d</b>
             <p>
                 <a href="http://llamasontheloosefarm.com/#/slideshow/%d/%s/">
-                    http://llamasontheloosefarm.com/#/slideshow/%d/%s/"
+                    http://llamasontheloosefarm.com/#/slideshow/%d/%s/
                 </a>
             </p>
 
