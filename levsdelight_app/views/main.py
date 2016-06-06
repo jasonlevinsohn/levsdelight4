@@ -12,6 +12,8 @@ from django.contrib.auth import authenticate, login, logout
 
 from levsdelight_app.models import Slideshow
 
+email_addresses_to_send = 'jason.levinsohn@gmail.com'
+
 # print "View Name: %s" % __name__
 logger = logging.getLogger(__name__)
 
@@ -193,18 +195,31 @@ def uploadimage(request):
     # return HttpResponse("Hey, I appreciate the filez. \n\n %s" % (report))
     try:
 
+        # Get the Month Map
+        mmo = MonthMap.objects.get(slideshow_id=s_id)
+
+        logger.log('Sending email about %s %d', mmo.month, mmo.year)
+
         subject = 'L2 Pictures added to %s' % (month_to_save_to)
-        from_email = 'jason@llamasontheloosefarm.com'
-        to = 'jason.levinsohn@gmail.com'
+        from_email = 'L3 <jason@llamasontheloosefarm.com>'
+        to = email_addresses_to_send
         text_content = 'L3 Pictures Updated'
         formatted_message = """
-            <b>Picture saved to %s</b>
-        """ % (month_to_save_to)
+            <b>Picture saved to %s %d</b>
+            <p>
+                <a href="http://llamasontheloosefarm.com/#/slideshow/%d/%s/">
+                    http://llamasontheloosefarm.com/#/slideshow/%d/%s/"
+                </a>
+            </p>
+
+        """ % (mmo.month, mmo.year, mmo.year, mmo.month, mmo.year, mmo.month)
 
         msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
         msg.attach_alternative(formatted_message, "text/html")
         msg.send()
     except Exception as e:
+        logger.error('Error sending email: %s', e.message)
+
         return JsonResponse({'message': e.message})
 
     return HttpResponse('Thanks we got it')
