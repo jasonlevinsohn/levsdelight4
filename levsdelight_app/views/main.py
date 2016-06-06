@@ -12,7 +12,7 @@ from django.contrib.auth import authenticate, login, logout
 
 from levsdelight_app.models import Slideshow
 
-email_addresses_to_send = 'jason.levinsohn@gmail.com', 'nparks55@gmail.com', 'bparks12@gmail.com'
+email_addresses_to_send = ['jason.levinsohn@gmail.com', 'nparks55@gmail.com', 'bparks12@gmail.com']
 
 # print "View Name: %s" % __name__
 logger = logging.getLogger(__name__)
@@ -212,7 +212,7 @@ def uploadimage(request):
 
         """ % (mmo.month, mmo.year, mmo.year, mmo.month, mmo.year, mmo.month)
 
-        msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+        msg = EmailMultiAlternatives(subject, text_content, from_email, to)
         msg.attach_alternative(formatted_message, "text/html")
         msg.send()
     except Exception as e:
