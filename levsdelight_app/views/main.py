@@ -12,7 +12,12 @@ from django.contrib.auth import authenticate, login, logout
 
 from levsdelight_app.models import Slideshow
 
-email_addresses_to_send = ['jason.levinsohn@gmail.com', 'nparks55@gmail.com', 'bparks12@gmail.com']
+email_addresses_to_send = [
+        'jason.levinsohn@gmail.com',
+        'nparks55@gmail.com',
+        'bparks12@gmail.com',
+        'JEMolis@aol.com',
+    ]
 
 # print "View Name: %s" % __name__
 logger = logging.getLogger(__name__)
@@ -203,10 +208,15 @@ def uploadimage(request):
         to = email_addresses_to_send
         text_content = 'L3 Slideshow Updated'
         formatted_message = """
-            <b>Picture saved to %s %d</b>
-            <p>
+            <h3 style="margin:0;margin-bottom:10px">Picture saved to %s %d</h3>
                 <a href="http://llamasontheloosefarm.com/#/slideshow/%d/%s/">
                     http://llamasontheloosefarm.com/#/slideshow/%d/%s/
+                </a>
+            <br>
+            <p>
+                <h2 style="margin-bottom: 40px">To see all the pictures go here</h2>
+                <a href="http://www.llamasontheloosefarm.com">
+                    http://www.llamasontheloosefarm.com
                 </a>
             </p>
 
