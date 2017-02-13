@@ -17,6 +17,10 @@ email_addresses_to_send = [
         'nparks55@gmail.com',
         'bparks12@gmail.com',
         'JEMolis@aol.com',
+        'cparks6020@gmail.com',
+        'billparks449@gmail.com',
+        'rainycarly@gmail.com',
+        'karenlawrence75@bellsouth.net',
     ]
 
 # print "View Name: %s" % __name__
@@ -214,11 +218,15 @@ def uploadimage(request):
                 </a>
             <br>
             <p>
-                <h2 style="margin-bottom: 40px">To see all the pictures go here</h2>
+                <h2 style="margin-top: 40px">To see all the pictures go here</h2>
                 <a href="http://www.llamasontheloosefarm.com">
                     http://www.llamasontheloosefarm.com
                 </a>
             </p>
+            <h3 style="color: #95ff52;margin-top: 30px">
+                To see the picture in fullscreen, just click it. <br>
+                Click it again to remove it from full screen.
+            </h3>
 
         """ % (mmo.month, mmo.year, mmo.year, mmo.month, mmo.year, mmo.month)
 
